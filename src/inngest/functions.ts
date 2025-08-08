@@ -1,9 +1,10 @@
-import { createAgent, createTool, grok } from "@inngest/agent-kit";
+import { createAgent, createNetwork, createTool, grok } from "@inngest/agent-kit";
 import z from "zod";
 import { inngest } from "./client";
 
+import { PROMPT } from "@/prompt";
 import { Sandbox } from "@e2b/code-interpreter";
-import { getSanbox } from "./utils";
+import { getSanbox, lastAssitantTextMessageContent } from "./utils";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -16,9 +17,10 @@ export const helloWorld = inngest.createFunction(
 
     const CodeAgent = createAgent({
       name: "code-agent",
-      system:
-        "Eres un experto en next.js y typescript. Tu escribes fragmentos simples de Nextjs y React.js ambos con Typescript.",
-      model: grok({ model: "grok-3-mini" }),
+      description: "an expert coding angent",
+      system: PROMPT,
+      model: grok({ model: "grok-3-latest" }),
+      // model: gemini({ model: "gemini-2.5-pro" }),
       tools: [
         createTool({
           name: "terminal",
@@ -82,10 +84,60 @@ export const helloWorld = inngest.createFunction(
             }
           },
         }),
+        createTool({
+          name: "readFiles",
+          description: "Read files from the sandbox",
+          parameters: z.object({
+            files: z.array(z.string()),
+          }),
+          handler: async ({ files }, { step }) => {
+            return await step?.run("readFiles", async () => {
+              try {
+                const sandobx = await getSanbox(sandboxId);
+                const contents = [];
+
+                for (const file of files) {
+                  const content = await sandobx.files.read(file);
+                  contents.push({ path: file, content });
+                }
+                return JSON.stringify(contents);
+              } catch (error) {
+                return "ERROR: " + error;
+              }
+            });
+          },
+        }),
       ],
+      lifecycle: {
+        onResponse: async ({ result, network }) => {
+          const lastAssistantMessageText = lastAssitantTextMessageContent(result);
+
+          if (lastAssistantMessageText && network) {
+            if (lastAssistantMessageText.includes("<task_summary>")) {
+              network.state.data.summary = lastAssistantMessageText;
+            }
+          }
+          return result;
+        },
+      },
     });
 
-    const { output } = await CodeAgent.run(`Escribe un snippet para: ${event.data.value}`);
+    const network = createNetwork({
+      name: "coding-agent-network",
+      agents: [CodeAgent],
+      maxIter: 15, // max cantidad de iteraciones del agente
+      router: async ({ network }) => {
+        const summary = network.state.data.summary;
+
+        if (summary) {
+          return;
+        }
+
+        return CodeAgent;
+      },
+    });
+
+    const result = await network.run(event.data.value);
 
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSanbox(sandboxId);
@@ -93,6 +145,11 @@ export const helloWorld = inngest.createFunction(
       return `http://${host}`;
     });
 
-    return { output, sandboxUrl };
+    return {
+      url: sandboxUrl,
+      title: "Fragment",
+      files: result.state.data.files,
+      summary: result.state.data.summary,
+    };
   }
 );
