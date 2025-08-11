@@ -2,13 +2,14 @@ import { createAgent, createNetwork, createTool, grok } from "@inngest/agent-kit
 import z from "zod";
 import { inngest } from "./client";
 
+import { prisma } from "@/lib/db";
 import { PROMPT } from "@/prompt";
 import { Sandbox } from "@e2b/code-interpreter";
 import { getSanbox, lastAssitantTextMessageContent } from "./utils";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+export const codeAgent = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandboxId = await step.run("generate-sandbox-id", async () => {
       const sandox = await Sandbox.create("vibe-nextjs-test-20");
@@ -139,10 +140,42 @@ export const helloWorld = inngest.createFunction(
 
     const result = await network.run(event.data.value);
 
+    const isError =
+      !result.state.data.summary || Object.keys(result.state.data.files || {}).length === 0;
+
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSanbox(sandboxId);
       const host = sandbox.getHost(3000);
-      return `http://${host}`;
+      return `https://${host}`;
+    });
+
+    // Guardar en prisma
+    await step.run("save-result", async () => {
+      // Comprobar si hay un error
+      if (isError) {
+        return await prisma.message.create({
+          data: {
+            content: "Something went wrong, Please try again",
+            role: "ASSISTANT",
+            type: "ERROR",
+          },
+        });
+      }
+
+      return await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: "ASSISTANT",
+          type: "RESULT",
+          fragment: {
+            create: {
+              sandboxUrl: sandboxUrl,
+              title: "Fragment",
+              files: result.state.data.files,
+            },
+          },
+        },
+      });
     });
 
     return {
