@@ -1,4 +1,4 @@
-import { createAgent, createNetwork, createTool, grok } from "@inngest/agent-kit";
+import { createAgent, createNetwork, createTool, grok, Tool } from "@inngest/agent-kit";
 import z from "zod";
 import { inngest } from "./client";
 
@@ -7,7 +7,12 @@ import { PROMPT } from "@/prompt";
 import { Sandbox } from "@e2b/code-interpreter";
 import { getSanbox, lastAssitantTextMessageContent } from "./utils";
 
-export const codeAgent = inngest.createFunction(
+interface AgentState {
+  summary: string;
+  files: { [path: string]: string };
+}
+
+export const codeAgentFunction = inngest.createFunction(
   { id: "code-agent" },
   { event: "code-agent/run" },
   async ({ event, step }) => {
@@ -16,9 +21,9 @@ export const codeAgent = inngest.createFunction(
       return sandox.sandboxId;
     });
 
-    const CodeAgent = createAgent({
+    const CodeAgent = createAgent<AgentState>({
       name: "code-agent",
-      description: "an expert coding angent",
+      description: "an expert coding agent",
       system: PROMPT,
       model: grok({ model: "grok-3-latest" }),
       // model: gemini({ model: "gemini-2.5-pro" }),
@@ -64,7 +69,7 @@ export const codeAgent = inngest.createFunction(
               })
             ),
           }),
-          handler: async ({ files }, { step, network }) => {
+          handler: async ({ files }, { step, network }: Tool.Options<AgentState>) => {
             const newFiles = await step?.run("createOrUpdateFiles", async () => {
               try {
                 const updatedFiles = network.state.data.files || {};
@@ -123,7 +128,7 @@ export const codeAgent = inngest.createFunction(
       },
     });
 
-    const network = createNetwork({
+    const network = createNetwork<AgentState>({
       name: "coding-agent-network",
       agents: [CodeAgent],
       maxIter: 15, // max cantidad de iteraciones del agente
