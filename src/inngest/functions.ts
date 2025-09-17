@@ -25,7 +25,7 @@ export const codeAgentFunction = inngest.createFunction(
       name: "code-agent",
       description: "an expert coding agent",
       system: PROMPT,
-      model: grok({ model: "grok-4-latest" }),
+      model: grok({ model: "grok-code-fast" }),
       // model: gemini({ model: "gemini-2.5-pro" }),
       tools: [
         createTool({
