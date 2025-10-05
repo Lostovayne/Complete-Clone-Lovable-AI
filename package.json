@@ -6,7 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "e2b:init": "cd sanbox-templates/nextjs && e2b template init",
+    "e2b:build": "cd sanbox-templates/nextjs && e2b template build",
+    "e2b:publish": "cd sanbox-templates/nextjs && e2b template publish",
+    "e2b:update": "cd sanbox-templates/nextjs && e2b template build && e2b template publish",
+    "e2b:status": "cd sanbox-templates/nextjs && e2b template list",
+    "e2b:test": "cd sanbox-templates/nextjs && e2b sandbox create lovable-nextjs-v15"
   },
   "dependencies": {
     "@e2b/code-interpreter": "^1.5.1",
