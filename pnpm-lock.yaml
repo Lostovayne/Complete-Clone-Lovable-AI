@@ -103,13 +103,13 @@ importers:
         version: 5.84.1(react@19.1.1)
       '@trpc/client':
         specifier: ^11.4.4
-        version: 11.4.4(@trpc/server@11.4.4(typescript@5.9.2))(typescript@5.9.2)
+        version: 11.4.4(@trpc/server@11.8.0(typescript@5.9.2))(typescript@5.9.2)
       '@trpc/server':
-        specifier: ^11.4.4
-        version: 11.4.4(typescript@5.9.2)
+        specifier: ^11.8.0
+        version: 11.8.0(typescript@5.9.2)
       '@trpc/tanstack-react-query':
         specifier: ^11.4.4
-        version: 11.4.4(@tanstack/react-query@5.84.1(react@19.1.1))(@trpc/client@11.4.4(@trpc/server@11.4.4(typescript@5.9.2))(typescript@5.9.2))(@trpc/server@11.4.4(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)
+        version: 11.4.4(@tanstack/react-query@5.84.1(react@19.1.1))(@trpc/client@11.4.4(@trpc/server@11.8.0(typescript@5.9.2))(typescript@5.9.2))(@trpc/server@11.8.0(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2013,8 +2013,8 @@ packages:
       '@trpc/server': 11.4.4
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.4.4':
-    resolution: {integrity: sha512-VkJb2xnb4rCynuwlCvgPBh5aM+Dco6fBBIo6lWAdJJRYVwtyE5bxNZBgUvRRz/cFSEAy0vmzLxF7aABDJfK5Rg==}
+  '@trpc/server@11.8.0':
+    resolution: {integrity: sha512-DphyQnLuyX2nwJCQGWQ9zYz4hZGvRhSBqDhQ0SH3tDhQ3PU4u68xofA0pJ741Ir4InEAFD+TtJVLAQy+wVOkiQ==}
     peerDependencies:
       typescript: '>=5.7.2'
 
@@ -3614,6 +3614,7 @@ packages:
   next@15.4.8:
     resolution: {integrity: sha512-jwOXTz/bo0Pvlf20FSb6VXVeWRssA2vbvq9SdrOPEg9x8E1B27C2rQtvriAn600o9hH61kjrVRexEffv3JybuA==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -6380,20 +6381,20 @@ snapshots:
       '@tanstack/query-core': 5.83.1
       react: 19.1.1
 
-  '@trpc/client@11.4.4(@trpc/server@11.4.4(typescript@5.9.2))(typescript@5.9.2)':
+  '@trpc/client@11.4.4(@trpc/server@11.8.0(typescript@5.9.2))(typescript@5.9.2)':
     dependencies:
-      '@trpc/server': 11.4.4(typescript@5.9.2)
+      '@trpc/server': 11.8.0(typescript@5.9.2)
       typescript: 5.9.2
 
-  '@trpc/server@11.4.4(typescript@5.9.2)':
+  '@trpc/server@11.8.0(typescript@5.9.2)':
     dependencies:
       typescript: 5.9.2
 
-  '@trpc/tanstack-react-query@11.4.4(@tanstack/react-query@5.84.1(react@19.1.1))(@trpc/client@11.4.4(@trpc/server@11.4.4(typescript@5.9.2))(typescript@5.9.2))(@trpc/server@11.4.4(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)':
+  '@trpc/tanstack-react-query@11.4.4(@tanstack/react-query@5.84.1(react@19.1.1))(@trpc/client@11.4.4(@trpc/server@11.8.0(typescript@5.9.2))(typescript@5.9.2))(@trpc/server@11.8.0(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)':
     dependencies:
       '@tanstack/react-query': 5.84.1(react@19.1.1)
-      '@trpc/client': 11.4.4(@trpc/server@11.4.4(typescript@5.9.2))(typescript@5.9.2)
-      '@trpc/server': 11.4.4(typescript@5.9.2)
+      '@trpc/client': 11.4.4(@trpc/server@11.8.0(typescript@5.9.2))(typescript@5.9.2)
+      '@trpc/server': 11.8.0(typescript@5.9.2)
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
       typescript: 5.9.2
