@@ -1,4 +1,4 @@
-import { createAgent, createNetwork, createTool, grok, Tool } from "@inngest/agent-kit";
+import { createAgent, createNetwork, createTool, gemini, Tool } from "@inngest/agent-kit";
 import z from "zod";
 import { inngest } from "./client";
 
@@ -17,7 +17,7 @@ export const codeAgentFunction = inngest.createFunction(
   { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandboxId = await step.run("generate-sandbox-id", async () => {
-      const sandox = await Sandbox.create("vibe-nextjs-test-20");
+      const sandox = await Sandbox.create("vibe-nextjs");
       return sandox.sandboxId;
     });
 
@@ -25,8 +25,7 @@ export const codeAgentFunction = inngest.createFunction(
       name: "code-agent",
       description: "an expert coding agent",
       system: PROMPT,
-      model: grok({ model: "grok-4-latest" }),
-      // model: gemini({ model: "gemini-2.5-pro" }),
+      model: gemini({ model: "gemini-2.5-pro" }),
       tools: [
         createTool({
           name: "terminal",
@@ -51,7 +50,7 @@ export const codeAgentFunction = inngest.createFunction(
                 return result.stdout;
               } catch (error) {
                 console.error(
-                  `Command failed with error: ${error}\n stdout: ${buffers.stdout} \n sstderror: ${buffers.stderr}`
+                  `Command failed with error: ${error}\n stdout: ${buffers.stdout} \n sstderror: ${buffers.stderr}`,
                 );
                 return `Command failed with error: ${error}\n stdout: ${buffers.stdout} \n sstderror: ${buffers.stderr}`;
               }
@@ -66,7 +65,7 @@ export const codeAgentFunction = inngest.createFunction(
               z.object({
                 path: z.string(),
                 content: z.string(),
-              })
+              }),
             ),
           }),
           handler: async ({ files }, { step, network }: Tool.Options<AgentState>) => {
@@ -191,5 +190,5 @@ export const codeAgentFunction = inngest.createFunction(
       files: result.state.data.files,
       summary: result.state.data.summary,
     };
-  }
+  },
 );
