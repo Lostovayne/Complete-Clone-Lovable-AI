@@ -1,0 +1,17 @@
+   ▲ Next.js 15.4.9
+   - Local:        http://localhost:3000
+   - Network:      http://172.29.160.1:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.5s
+ ○ Compiling / ...
+ ✓ Compiled / in 1923ms (872 modules)
+ GET / 200 in 2662ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 680ms (532 modules)
+ GET /favicon.ico 200 in 843ms
+ ○ Compiling /projects/[projectId] ...
+ ✓ Compiled /projects/[projectId] in 1348ms (908 modules)
+ GET / 200 in 191ms
+ GET /projects/test-project-id 200 in 2802ms

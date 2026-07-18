@@ -45,3 +45,5 @@ next-env.d.ts
 # Logs
 package-lock.json
 pnpm-lock.yaml
+# Local Pi runtime state
+.atl/

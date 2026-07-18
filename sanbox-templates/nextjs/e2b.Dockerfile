@@ -11,8 +11,8 @@ RUN dos2unix /compile_page.sh && chmod +x /compile_page.sh
 # Install dependencies and customize sandbox
 WORKDIR /home/user
 
-# Create Next.js app with TypeScript and Tailwind
-RUN npx --yes create-next-app@latest nextjs-app --typescript --tailwind --app --no-src-dir --import-alias "@/*" --turbopack --yes
+# Create Next.js 16.3 app with TypeScript and Tailwind
+RUN npx --yes create-next-app@16.3.0 nextjs-app --typescript --tailwind --app --no-src-dir --import-alias "@/*" --turbopack --yes
 
 # Install shadcn/ui
 WORKDIR /home/user/nextjs-app
